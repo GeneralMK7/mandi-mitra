@@ -1,6 +1,40 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 function Register() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "Farmer",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await api.post("/auth/register", formData);
+
+      if (response.data.success) {
+        alert(response.data.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      alert("Registration Failed");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-md p-8">
@@ -15,7 +49,7 @@ function Register() {
           </p>
         </div>
 
-        <form className="space-y-5">
+        <form onSubmit={handleRegister} className="space-y-5">
 
           <div>
             <label className="block mb-2 font-medium">
@@ -24,8 +58,12 @@ function Register() {
 
             <input
               type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
               placeholder="Enter your full name"
               className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600"
+              required
             />
           </div>
 
@@ -36,8 +74,12 @@ function Register() {
 
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="Enter your email"
               className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600"
+              required
             />
           </div>
 
@@ -48,8 +90,12 @@ function Register() {
 
             <input
               type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Create a password"
               className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600"
+              required
             />
           </div>
 
@@ -59,14 +105,18 @@ function Register() {
             </label>
 
             <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
               className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600"
             >
-              <option>Farmer</option>
-              <option>Admin</option>
+              <option value="Farmer">Farmer</option>
+              <option value="Admin">Admin</option>
             </select>
           </div>
 
           <button
+            type="submit"
             className="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-lg font-semibold transition"
           >
             Register

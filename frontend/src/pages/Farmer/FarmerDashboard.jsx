@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../services/api";
 import {
   FaLeaf,
   FaCloudSun,
@@ -69,6 +70,8 @@ function FarmerDashboard() {
     language: "English",
   });
 
+  const [advisory, setAdvisory] = useState(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -87,10 +90,17 @@ function FarmerDashboard() {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log(formData);
+  const handleSubmit = async () => {
+    try {
+      const response = await api.post("/advisory", formData);
 
-    // TODO: axios.post("/advisory", formData)
+      setAdvisory(response.data);
+
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to fetch advisory");
+    }
   };
 
   const availableDistricts = formData.state
@@ -256,20 +266,26 @@ function FarmerDashboard() {
                   </h3>
                 </div>
 
-                <div className="flex flex-col gap-3 text-gray-600 text-sm">
-                  <div className="flex items-center gap-2">
-                    <FaTint className="text-green-600" />
-                    <span>Temperature: --</span>
+                {advisory ? (
+                  <div className="flex flex-col gap-3 text-gray-600 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FaTint className="text-green-600" />
+                      <span>Temperature: {advisory.weather.temperature}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FaWater className="text-green-600" />
+                      <span>Humidity: {advisory.weather.humidity}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FaCloudSun className="text-green-600" />
+                      <span>Rainfall: {advisory.weather.rainfall}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <FaWater className="text-green-600" />
-                    <span>Humidity: --</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FaCloudSun className="text-green-600" />
-                    <span>Rainfall: --</span>
-                  </div>
-                </div>
+                ) : (
+                  <p className="text-gray-500">Click "Get Advisory"</p>
+                )}
               </div>
 
               {/* Mandi Price Card */}
@@ -281,20 +297,26 @@ function FarmerDashboard() {
                   </h3>
                 </div>
 
-                <div className="flex flex-col gap-3 text-gray-600 text-sm">
-                  <div className="flex items-center gap-2">
-                    <FaStore className="text-green-600" />
-                    <span>Market Name: --</span>
+                {advisory ? (
+                  <div className="flex flex-col gap-3 text-gray-600 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FaStore className="text-green-600" />
+                      <span>{advisory.market.market_name}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FaChartLine className="text-green-600" />
+                      <span>{advisory.market.current_price}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FaChartLine className="text-green-600" />
+                      <span>{advisory.market.trend}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <FaChartLine className="text-green-600" />
-                    <span>Current Price: --</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FaChartLine className="text-green-600" />
-                    <span>Price Trend: --</span>
-                  </div>
-                </div>
+                ) : (
+                  <p className="text-gray-500">Click "Get Advisory"</p>
+                )}
               </div>
 
               {/* Crop Knowledge Card */}
@@ -306,20 +328,26 @@ function FarmerDashboard() {
                   </h3>
                 </div>
 
-                <div className="flex flex-col gap-3 text-gray-600 text-sm">
-                  <div className="flex items-center gap-2">
-                    <FaCalendarAlt className="text-green-600" />
-                    <span>Harvest Tip: --</span>
+                {advisory ? (
+                  <div className="flex flex-col gap-3 text-gray-600 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FaCalendarAlt className="text-green-600" />
+                      <span>{advisory.crop.harvest_tip}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FaBoxOpen className="text-green-600" />
+                      <span>{advisory.crop.storage_tip}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FaChartLine className="text-green-600" />
+                      <span>{advisory.crop.best_selling_period}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <FaBoxOpen className="text-green-600" />
-                    <span>Storage Tip: --</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FaChartLine className="text-green-600" />
-                    <span>Best Selling Period: --</span>
-                  </div>
-                </div>
+                ) : (
+                  <p className="text-gray-500">Click "Get Advisory"</p>
+                )}
               </div>
 
               {/* AI Recommendation Card */}
@@ -332,7 +360,9 @@ function FarmerDashboard() {
                 </div>
 
                 <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg p-4 text-sm">
-                  Waiting for AI recommendation...
+                  {advisory
+                    ? advisory.recommendation
+                    : "Click 'Get Advisory' to view recommendation"}
                 </div>
               </div>
             </div>

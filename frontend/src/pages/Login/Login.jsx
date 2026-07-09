@@ -1,6 +1,38 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+      });
+
+      if (response.data.success) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.data.user)
+        );
+
+        alert(response.data.message);
+
+        navigate("/farmer");
+      }
+    } catch (error) {
+      alert("Login Failed");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white shadow-xl rounded-2xl w-full max-w-md p-8">
@@ -15,7 +47,7 @@ function Login() {
           </p>
         </div>
 
-        <form className="space-y-5">
+        <form onSubmit={handleLogin} className="space-y-5">
 
           <div>
             <label className="block mb-2 font-medium">
@@ -24,8 +56,12 @@ function Login() {
 
             <input
               type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600"
+              required
             />
           </div>
 
@@ -36,12 +72,17 @@ function Login() {
 
             <input
               type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600"
+              required
             />
           </div>
 
           <button
+            type="submit"
             className="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-lg font-semibold transition"
           >
             Login
