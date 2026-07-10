@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import {
   FaLeaf,
@@ -70,6 +71,12 @@ function FarmerDashboard() {
     language: "English",
   });
 
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
   const [advisory, setAdvisory] = useState(null);
 
   const handleChange = (e) => {
@@ -118,10 +125,14 @@ function FarmerDashboard() {
           </h1>
         </div>
 
-        <button className="flex items-center gap-2 bg-white text-green-700 px-4 py-2 rounded-lg font-semibold hover:bg-green-100 transition-colors duration-200">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 bg-white text-green-700 px-5 py-2 rounded-lg font-semibold hover:bg-green-100 transition duration-200 shadow"
+        >
           <FaSignOutAlt />
-          Logout
+          <span>Logout</span>
         </button>
+
       </div>
 
       <div className="max-w-7xl mx-auto p-6 md:p-8">
