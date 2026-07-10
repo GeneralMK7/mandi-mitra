@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.database.database import engine
+from app.database.models import Base
+from app.routes.market import router as market_router
 
 # Import Routes
 from app.routes.auth import router as auth_router
@@ -11,10 +14,15 @@ app = FastAPI(
     version="1.0.0"
 )
 
+Base.metadata.create_all(bind=engine)
+
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5175"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5175",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,8 +42,6 @@ def health():
         "status": "Running"
     }
 
-# Register Routes
 app.include_router(auth_router)
-
-# Advisory Routes
 app.include_router(advisory_router)
+app.include_router(market_router)
