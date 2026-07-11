@@ -8,7 +8,7 @@ import StatsCards from "./components/StatsCards";
 import FarmerForm from "./components/FarmerForm";
 import WeatherCard from "./components/WeatherCard";
 import MarketCard from "./components/MarketCard";
-import TrendChart from "./components/TrendChart";
+import MaxPriceTrendChart from "./components/MaxPriceTrendChart";
 import CropCard from "./components/CropCard";
 import AdvisoryCard from "./components/AdvisoryCard";
 import FloatingButtons from "./components/FloatingButtons";
@@ -31,6 +31,7 @@ function FarmerDashboard() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [advisory, setAdvisory] = useState(null);
+  const [priceHistory, setPriceHistory] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const t = getTranslator(formData.language);
@@ -58,8 +59,18 @@ function FarmerDashboard() {
 
     setLoading(true);
     try {
-      const response = await api.post("/advisory", formData);
-      setAdvisory(normalizeAdvisory(response.data, formData));
+      const [advisoryRes, historyRes] = await Promise.all([
+        api.post("/advisory", formData),
+        api.get("/market/history", {
+          params: {
+            state: formData.state,
+            district: formData.district,
+            crop: formData.crop,
+          },
+        }),
+      ]);
+      setAdvisory(normalizeAdvisory(advisoryRes.data, formData));
+      setPriceHistory(historyRes.data || []);
     } catch (error) {
       console.error(error);
       alert("Failed to fetch advisory. Please try again.");
@@ -76,6 +87,7 @@ function FarmerDashboard() {
 
   const handleAskAgain = () => {
     setAdvisory(null);
+    setPriceHistory(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -140,10 +152,11 @@ function FarmerDashboard() {
               <MarketCard t={t} data={advisory?.market} empty={isEmpty} />
             </div>
 
-            <TrendChart
+            <MaxPriceTrendChart
               t={t}
-              history={advisory?.priceHistory}
+              history={priceHistory || []}
               empty={isEmpty}
+              location={`${formData.district}, ${formData.state}`}
             />
 
             <CropCard t={t} data={advisory?.crop} empty={isEmpty} />

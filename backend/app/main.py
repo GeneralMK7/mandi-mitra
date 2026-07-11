@@ -7,6 +7,7 @@ from app.routes.market import router as market_router
 # Import Routes
 from app.routes.auth import router as auth_router
 from app.routes.advisory import router as advisory_router
+from app.routes.admin import router as admin_router
 
 app = FastAPI(
     title="MandiMitra API",
@@ -45,3 +46,4 @@ def health():
 app.include_router(auth_router)
 app.include_router(advisory_router)
 app.include_router(market_router)
+app.include_router(admin_router)
