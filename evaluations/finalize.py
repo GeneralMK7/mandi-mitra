@@ -1,7 +1,7 @@
 import json
 import pandas as pd
-from agna_market_api.agmarknet_api import fetch_historical_prices
-from weather_api.weather_api import fetch_weather_data
+from agmarknet_api import fetch_historical_prices
+from weather_api import fetch_weather_data
 
 
 COMMODITY = 'Potato'

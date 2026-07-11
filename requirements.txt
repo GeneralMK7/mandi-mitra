@@ -1,7 +1,6 @@
 pandas
 requests
-sqlalchemy
 pathlib
-glob
 typing
 dotenv
+openai

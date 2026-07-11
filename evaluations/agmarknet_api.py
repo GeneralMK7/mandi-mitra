@@ -14,9 +14,7 @@ API_KEY = os.getenv("DATA_GOV_API_KEY")
 RESOURCE_ID = os.getenv("RESOURCE_ID")
 API_URL = f"https://api.data.gov.in/resource/{RESOURCE_ID}"
 
-
-BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "database" / "mandi_prices.db"
+DB_PATH = Path.cwd().parent/"database"/"mandi_prices.db"
 
 SUPPORTED_COMMODITIES = {
     "Brinjal",
@@ -27,15 +25,16 @@ SUPPORTED_COMMODITIES = {
     "Tomato",
 }
 
+
 # - 1. Fetch the latest mandi prices from the agmarknet API -----------------
 
 def fetch_current_prices(
-    state: str,
-    commodity: str,
-    limit: int = 100,
-    market: Optional[str] = None,
-    district: Optional[str] = None,
-    timeout: int = 30,
+        state: str,
+        commodity: str,
+        limit: int = 100,
+        market: Optional[str] = None,
+        district: Optional[str] = None,
+        timeout: int = 30,
 ) -> Optional[pd.DataFrame]:
     """
     Hits the data.gov.in agmarknet resource for the most recent record
@@ -139,6 +138,7 @@ def normalize_api_data(raw_df):
     ]
 
     return df[db_columns]
+
 
 # ── 3. Insert/update without deleting agmarknet arrival values ───────────────
 
@@ -316,4 +316,5 @@ def fetch_historical_prices(
 
     history["arrival_date"] = pd.to_datetime(history["arrival_date"])
     return history
+
 

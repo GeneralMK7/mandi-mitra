@@ -1,15 +1,18 @@
-import requests, base64, os
+import os
+from openai import OpenAI
 
 from finalize import make_fast_payload
 from finalize import generate_analysis
-import time
-invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
-stream = False
 
-COMMODITY = 'Potato'
+import time
+invoke_url = "http://localhost:11434/v1"
+stream = False
+OLLAMA_API_KEY = "ollama"
+
+COMMODITY = 'Tomato'
 STATE = 'Andhra Pradesh'
 MARKET = 'Palamaner APMC'
-LANGUAGE = 'Telugu'
+LANGUAGE = 'Malayalam'
 
 NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
 
@@ -20,13 +23,10 @@ LONGITUDE = 78.505798
 def call_gemma(commodity, state, market, latitude, longitude, language="Telugu"):
     gemma_payload = generate_analysis(commodity, state, market, latitude, longitude, language)
     payload_text = make_fast_payload(gemma_payload)
-    headers = {
-      "Authorization": f"Bearer {NVIDIA_API_KEY}",
-      "Accept": "text/event-stream" if stream else "application/json"
-    }
+    
 
     system_prompt = f"""You are Mandi Mitra, a practical agricultural advisory assistant 
-    who advices in {language} Language for Indian farmers. Use only verified context. 
+    who advices only in {language} Language for Indian farmers. Use only verified context. 
     The recommended_decision is authoritative; do not change it.
     Do not predict future prices or invent facts."""
 
@@ -44,30 +44,29 @@ def call_gemma(commodity, state, market, latitude, longitude, language="Telugu")
     {payload_text}
     """
 
-    messages = [{"role":"system", "content": system_prompt},
-                {"role":"user", "content": user_prompt}
-    ]
+    messages = [{"role":"system", "content": system_prompt},{"role":"user", "content": user_prompt}]
 
-    payload = {
-      "model": "google/gemma-3n-e4b-it",
-      "messages": messages,
-      "max_tokens": 256,
-      "temperature": 0.20,
-      "top_p": 0.70,
-      "frequency_penalty": 0.00,
-      "presence_penalty": 0.00,
-      "stream": stream
-    }
+    client = OpenAI(
+        base_url="http://localhost:11434/v1",
+        api_key="ollama"
+    )
 
-    response = requests.post(invoke_url, headers=headers, json=payload)
-
-    if stream:
-        for line in response.iter_lines():
-            if line:
-                print(line.decode("utf-8"))
-        return None
-    else:
-        return response.json()
+    response = client.chat.completions.create(
+        model="gemma4:e2b-it-q4_K_M",
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            }
+        ],
+        temperature=0,
+        max_tokens=1024
+    )
+    return response.choices[0].message.content
 
 start = time.time()
 print(call_gemma(commodity=COMMODITY, state=STATE, market=MARKET, latitude=LATITUDE, longitude=LONGITUDE, language=LANGUAGE))
