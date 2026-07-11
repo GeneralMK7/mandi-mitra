@@ -1,4 +1,18 @@
-# Agmarknet API features
+# Agmarknet API Integration
+
+This module provides a Python interface for fetching, normalizing, storing, and retrieving agricultural market (mandi) price data from the data.gov.in Agmarknet API.
+
+Everything about the api is in ```/notebooks/agmarknet.ipynb```
+
+It is designed to:
+
+- Fetch the latest mandi prices from the Agmarknet API.
+- Normalize API responses into a consistent database schema.
+- Synchronize daily market prices into a local SQLite database.
+- Preserve historical arrival information while updating prices.
+- Retrieve historical price data for analysis or forecasting.
+
+The implementation is intended for agricultural analytics, price forecasting, and market intelligence applications.
 
 
 ``` State```: The name of the Indian state where the market (mandi) is located (e.g., Andhra Pradesh).

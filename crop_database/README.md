@@ -2,13 +2,11 @@
 
 This document describes every field used in `crop_knowledge_base.json`. Each crop entry follows this schema. Fields are grouped by purpose to match the Intermediate Rule Layer in the MandiMitra architecture.
 
----
 
 ## Identification
 
 **`crop_name`** : Display name of the crop shown in the UI and final advisory output.
 
----
 
 ## Temperature Fields
 
@@ -20,7 +18,7 @@ This document describes every field used in `crop_knowledge_base.json`. Each cro
 
 **`chilling_injury_threshold_c`** : A distinct, more severe cold threshold than `critical_temp_min_c`. Marks the point of irreversible cellular damage (pitting, browning, failure to ripen, rapid decay). Only defined for crops where the source data documents this specific mechanism (tomato, green chilli, brinjal). `null` where not applicable (onion, potato). This field drives emergency-harvest style alerts.
 
----
+
 
 ## Sensitivity Flags
 
@@ -38,7 +36,7 @@ These flags let the rule layer quickly filter which risks are even relevant to a
 
 **`critical_growth_stage_dat`** : `[start, end]` in days-after-transplanting. Present only where a risk is dangerous during one specific developmental window rather than the whole growing season (e.g., onion waterlogging during bulb initiation). Prevents the system from treating off-season rain the same as rain during the vulnerable window.
 
----
+
 
 ## Storage & Perishability
 
@@ -50,7 +48,7 @@ These flags let the rule layer quickly filter which risks are even relevant to a
 
 **`perishability`** : Categorical tag (`low` / `medium` / `high`) derived from `storage_life_days`. A cheap, human-readable signal for prompt context so Gemma doesn't need to infer urgency from raw day counts.
 
----
+
 
 ## Harvest Timing
 
@@ -58,7 +56,7 @@ These flags let the rule layer quickly filter which risks are even relevant to a
 
 **`field_lifecycle_days`** : `[min, max]`. Total days from planting/transplanting to first harvest. Contextual field — helps validate whether a crop is old enough to be considered for early or emergency harvest.
 
----
+
 
 ## Market Fields
 
@@ -70,7 +68,6 @@ These flags let the rule layer quickly filter which risks are even relevant to a
 
 **`advisory_note`** : Pre-written, human-reviewed explanation of the crop's key vulnerability mechanism in plain language. The most important field for hallucination control — Gemma draws on and rephrases/localizes this vetted text instead of reasoning about crop biology from scratch, which matters since incorrect advice here has real financial consequences for the farmer.
 
----
 
 ## Field Usage Summary
 
