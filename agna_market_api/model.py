@@ -21,7 +21,7 @@ def call_gemma(commodity, state, market, latitude, longitude, language="Telugu")
     gemma_payload = generate_analysis(commodity, state, market, latitude, longitude, language)
     payload_text = make_fast_payload(gemma_payload)
     headers = {
-      "Authorization": f"Bearer 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",
+      "Authorization": f"Bearer {NVIDIA_API_KEY}",
       "Accept": "text/event-stream" if stream else "application/json"
     }
 
