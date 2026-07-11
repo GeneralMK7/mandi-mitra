@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import Header from "../../components/Header";
+import Hero from "../../components/Hero";
+import StatsCards from "../../components/StatsCards";
 import {
   FaLeaf,
   FaCloudSun,
@@ -116,45 +119,34 @@ function FarmerDashboard() {
 
   return (
     <div className="min-h-screen bg-green-50">
-      {/* Header */}
-      <div className="bg-green-700 text-white px-6 md:px-10 py-5 flex justify-between items-center shadow-md sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <FaLeaf className="text-2xl md:text-3xl" />
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            MandiMitra
-          </h1>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 bg-white text-green-700 px-5 py-2 rounded-lg font-semibold hover:bg-green-100 transition duration-200 shadow"
-        >
-          <FaSignOutAlt />
-          <span>Logout</span>
-        </button>
-
-      </div>
+      <Header handleLogout={handleLogout} />
 
       <div className="max-w-7xl mx-auto p-6 md:p-8">
-        {/* Welcome */}
-        <div className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-            Welcome Farmer 👋
-          </h2>
-          <p className="text-gray-600 mt-2">
-            Enter your crop details to receive personalized recommendations.
-          </p>
-        </div>
+        <Hero />
+        <StatsCards />
 
         {/* Main Layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left: Farmer Details (40%) */}
           <div className="lg:w-2/5 w-full">
             <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 border-t-4 border-green-700 sticky top-24">
-              <h3 className="text-xl md:text-2xl font-semibold mb-6 text-gray-800 flex items-center gap-2">
-                <FaSeedling className="text-green-700" />
-                Farmer Details
-              </h3>
+              <div className="mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="bg-green-100 p-3 rounded-xl">
+                    <FaSeedling className="text-green-700 text-2xl" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-800">
+                      Farmer Information
+                    </h3>
+
+                    <p className="text-gray-500 text-sm">
+                      Fill in your crop details to receive an AI-powered recommendation.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               <div className="flex flex-col gap-5">
                 {/* State */}
@@ -267,9 +259,9 @@ function FarmerDashboard() {
 
           {/* Right: Result Cards (60%) */}
           <div className="lg:w-3/5 w-full">
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Weather Card */}
-              <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-200 border border-gray-100">
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
                 <div className="flex items-center gap-2 mb-4">
                   <FaCloudSun className="text-2xl text-green-700" />
                   <h3 className="text-lg font-bold text-gray-800">
@@ -300,7 +292,7 @@ function FarmerDashboard() {
               </div>
 
               {/* Mandi Price Card */}
-              <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-200 border border-gray-100">
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
                 <div className="flex items-center gap-2 mb-4">
                   <FaChartLine className="text-2xl text-green-700" />
                   <h3 className="text-lg font-bold text-gray-800">
@@ -331,7 +323,7 @@ function FarmerDashboard() {
               </div>
 
               {/* Crop Knowledge Card */}
-              <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-200 border border-gray-100">
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
                 <div className="flex items-center gap-2 mb-4">
                   <FaSeedling className="text-2xl text-green-700" />
                   <h3 className="text-lg font-bold text-gray-800">
@@ -362,7 +354,7 @@ function FarmerDashboard() {
               </div>
 
               {/* AI Recommendation Card */}
-              <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition-shadow duration-200 border border-gray-100">
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
                 <div className="flex items-center gap-2 mb-4">
                   <FaRobot className="text-2xl text-green-700" />
                   <h3 className="text-lg font-bold text-gray-800">
