@@ -24,7 +24,7 @@ def get_market_data(state, district, market, crop):
             AND commodity = ?
         ORDER BY arrival_date DESC
         LIMIT 1
-    """, (state, district, market, crop, limit))
+    """, (state, district, market, crop))
 
     row = cursor.fetchone()
     conn.close()
@@ -45,14 +45,14 @@ def get_market_history(state, district, market, crop, limit=30):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT arrival_date, max_price, modal_price, min_price
-        FROM mandi_market_data
-        WHERE state = ?
-            AND district = ?
-            AND market = ?
-            AND commodity = ?
-        ORDER BY arrival_date DESC
-        LIMIT 1
+    SELECT arrival_date, max_price, modal_price, min_price
+    FROM mandi_market_data
+    WHERE state = ?
+        AND district = ?
+        AND market = ?
+        AND commodity = ?
+    ORDER BY arrival_date DESC
+    LIMIT ?
     """, (state, district, market, crop, limit))
 
     rows = [dict(row) for row in cursor.fetchall()]
