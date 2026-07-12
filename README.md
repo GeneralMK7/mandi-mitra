@@ -11,7 +11,7 @@
 
 ## 1. The Problem
 
-Meet **Ramanna, a marginal potato farmer near Madanapalle, Chittoor district, Andhra Pradesh**, who sells his produce at Palamaner APMC. Every harvest, he faces the same dilemma: sell today at whatever price the mandi is quoting, or hold for a few days hoping the price improves?
+Meet **Ramesh, a marginal potato farmer near Madanapalle, Chittoor district, Andhra Pradesh**, who sells his produce at Palamaner APMC. Every harvest, he faces the same dilemma: sell today at whatever price the mandi is quoting, or hold for a few days hoping the price improves?
 
 He has no easy way to answer this. He can't tell if today's price dip is a one-day blip or the start of a real slide. He has no visibility into whether the next few days of heat or rain will spoil his stock before he can even transport it to the market. And even if he had access to raw price charts or a weather app, most of that information comes in English or generic units that don't translate into a clear "sell now" or "wait" decision — let alone the language he is comfortable in
 
