@@ -4,7 +4,6 @@
 
 ![Architecture](assets/architecture.png)
 
----
 
 ## 1. The Problem
 
@@ -14,7 +13,7 @@ He has no easy way to answer this. He can't tell if today's price dip is a one-d
 
 This is the gap Mandi Mitra is built for: **small and marginal farmers who need a clear, localized, trustworthy answer to "should I sell now or wait?" — not raw data they have to interpret themselves.**
 
----
+
 
 ## 2. The Solution
 
@@ -26,7 +25,7 @@ The key design choice: **the AI model is never asked to make the decision itself
 
 Mandi Mitra does **not** predict future prices or guarantee profits — it presents current market and weather conditions so farmers can decide with confidence.
 
----
+
 
 ## 3. How It Works
 
@@ -54,11 +53,13 @@ Gemma sits **at the very end** of the pipeline, and only sees:
 
 Gemma never sees raw price tables or full weather JSON, and it never makes the sell/wait decision itself — it only phrases an already-made decision in plain, localized language. See the [Detailed Workflow](#detailed-workflow-step-by-step) in the Appendix for the full step-by-step breakdown of exactly how the rule engine derives these facts.
 
----
+
 
 ## 4. Results
 
-> 📸 **Screenshots and demo link:** *(add here — e.g. a Streamlit Cloud/HF Spaces link and 2-3 screenshots of the input form and the generated advisory)*
+> 📸 **Screenshots:**
+
+
 > **Home Page**
 ![HomePage](assets/home_page.png)
 > **Telugu Language**
@@ -69,6 +70,12 @@ Gemma never sees raw price tables or full weather JSON, and it never makes the s
 ![HomePage](assets/hindhi.png)
 > **English Language**
 ![HomePage](assets/english.png)
+
+
+> **Demo Link: **
+
+[![Youtube](image-link)](youtube-link)
+
 
 ### Sample Input → Output
 
@@ -95,7 +102,7 @@ Gemma never sees raw price tables or full weather JSON, and it never makes the s
 >
 > *(This is illustrative sample output for demonstration; actual phrasing will vary slightly each time Gemma generates it.)*
 
----
+
 
 ## 5. Limitations
 
@@ -111,7 +118,7 @@ Gemma never sees raw price tables or full weather JSON, and it never makes the s
 - **Gemma's output is non-deterministic.** The underlying facts and decision are fixed, but exact phrasing can vary slightly run to run.
 - **Requires a smartphone/internet** No SMS, IVR, or voice interface yet, which excludes farmers without a data connection or smartphone.
   
----
+
 
 ## 6. What Next
 
@@ -129,21 +136,29 @@ Gemma never sees raw price tables or full weather JSON, and it never makes the s
 
 The path from this prototype to something a real farmer would depend on daily would mainly hinge on **data reliability** (consistent AGMARKNET coverage for small markets) and **distribution** (reaching farmers without smartphones) — the core reasoning pipeline itself already generalizes to new crops and markets fairly easily.
 
----
 
 ## 7. Credits
 
-Developed as part of an AI for Agriculture initiative to help Indian farmers make better selling decisions through explainable, multilingual, fact-driven advisory generation.
 
-**Built with:**
-- AGMARKNET (OGD India)
-- OpenWeather
-- Google Gemma
-- Ollama / Google AI Studio
-- Streamlit
-- Python Open Source Community
+**Team Members and Roles**
 
----
+* **Golla Madhukiran:** Crop Database, Integration(Gemma model)
+* **Aditi Baskaran:** Frontend & Backend Development
+* **Gudipati Manogna:** AGMARKNET API & Rule Engine
+* **Katreddy Preetham Reddy:** Weather API, Integration, and Testing
+
+**Tools, Libraries, and Datasets**
+
+* **AI Model:** Google Gemma (via Ollama)
+* **Datasets & APIs:** AGMARKNET (OGD India), OpenWeather
+* **Frameworks & Languages:** React, Python, SQLite
+
+**Project Context & Resources**
+
+* This project was developed as part of an AI for Agriculture initiative designed to help Indian farmers make better selling decisions through explainable, multilingual, fact-driven advisory generation.
+* For a complete visual breakdown of how our team integrated these tools and data pipelines, please refer to the workflow diagram in ```/assets/architecture.png```.
+
+For more details: go to ```/assets``` folder
 
 ## 📎 Appendix: Technical Details
 
