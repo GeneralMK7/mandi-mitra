@@ -2,6 +2,10 @@
 
 **Mandi Mitra** is an AI-powered decision-support tool that helps Indian farmers decide **when and where to sell their crops**, by combining live weather data, real-time mandi (market) prices, historical price trends, and crop-specific agricultural knowledge — then turning all of it into a simple, trustworthy advisory using **Gemma**.
 
+
+
+[▶️ DEMO VIDEO](https://youtu.be/57g8IAp2zXY)
+
 ![Architecture](assets/architecture.png)
 
 
@@ -72,9 +76,7 @@ Gemma never sees raw price tables or full weather JSON, and it never makes the s
 ![HomePage](assets/english.png)
 
 
-> **Demo Link: **
 
-[![Youtube](image-link)](youtube-link)
 
 
 ### Sample Input → Output
