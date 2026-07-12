@@ -16,7 +16,6 @@ import Footer from "./components/Footer";
 import LoadingScreen from "./components/LoadingScreen";
 import { getTranslator } from "./components/translations";
 import { normalizeAdvisory } from "./components/advisoryAdapter";
-import {call_gemma} from "../../../../evaluations/model.py";
 
 const INITIAL_FORM = {
   state: "",
@@ -61,23 +60,22 @@ function FarmerDashboard() {
     setLoading(true);
 
     try {
-      // NOTE: call_gemma was previously called without being imported anywhere.
-      // Route it through `api` (your services/api module) instead — adjust the
-      // method name below to whatever your api.js actually exports.
-      const response = await api.call_gemma(
-        formData.state,
-        formData.district,
-        formData.crop,
-        "Palamaner APMC",
-        13.552040,
-        78.505798
-      );
+      const response = await api.post("/advisory/", {
+        state: formData.state,
+        district: formData.district,
+        crop: formData.crop,
+        storage: formData.storage,
+        language: formData.language,
+        harvestDate: formData.harvestDate,
+        quantity: formData.quantity,
+        market: `${formData.district} APMC`,
+        latitude: 13.552040,
+        longitude: 78.505798,
+      });
 
-      console.log("raw gemma response:", response);
+      console.log("raw gemma response:", response.data);
 
-      // Reshape the raw response into exactly what AdvisoryCard.jsx expects:
-      // { recommendation, reasons, confidence, riskLevel, weather, market, crop, price_history }
-      const normalized = normalizeAdvisory(response);
+      const normalized = normalizeAdvisory(response.data, formData);
       console.log("normalized advisory:", normalized);
 
       setAdvisory(normalized);

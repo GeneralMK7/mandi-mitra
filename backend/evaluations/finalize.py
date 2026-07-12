@@ -1,7 +1,13 @@
 import json
+from pathlib import Path
+
 import pandas as pd
-from agmarknet_api import fetch_historical_prices
-from weather_api import fetch_weather_data
+
+from .agmarknet_api import fetch_historical_prices
+from .weather_api import fetch_weather_data
+
+BASE_DIR = Path(__file__).resolve().parent
+CROP_KB_PATH = BASE_DIR.parent / "crop_database" / "crop_knowledge_base.json"
 
 
 COMMODITY = 'Potato'
@@ -14,9 +20,7 @@ LATITUDE = 13.552040
 LONGITUDE = 78.505798
 
 def get_crop_knowledge(commodity):
-    file_path = r"../crop_database/crop_knowledge_base.json"
-
-    with open(file_path, "r", encoding="utf-8") as file:
+    with open(CROP_KB_PATH, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     crop_knowledge = data[f'{commodity.lower()}']
@@ -393,22 +397,30 @@ def make_fast_payload(gemma_payload):
     rules = gemma_payload["rule_engine_result"]
     farmer = gemma_payload["farmer_context"]
 
+    def safe_round(value, digits=0):
+        if value is None:
+            return None
+        try:
+            return round(float(value), digits)
+        except (TypeError, ValueError):
+            return None
+
     return {
         "lang": farmer["language"],
         "crop": farmer["crop"],
         "market": farmer["market"],
         "district": farmer["district"],
         "decision": rules["recommended_decision"],
-        "price": round(market["latest"]["modal_price"]),
-        "chg7d_pct": round(market["seven_day_change_percent"], 1),
-        "trend": market["trend"],
-        "max_temp_c": round(rules["weather_risk"]["max_forecast_temp_c"]),
-        "heat_risk": rules["weather_risk"]["heat_risk"],
-        "rain_risk": rules["weather_risk"]["rain_risk"],
-        "perishable": crop["perishability"],
-        "storage_days": crop["storage_life_days"],
-        "crit_temp_c": crop["critical_temp_max_c"],
-        "reasons": rules["reasons"],  # cap to top 2, see point 3
+        "price": safe_round(market.get("latest", {}).get("modal_price")),
+        "chg7d_pct": safe_round(market.get("seven_day_change_percent"), 1),
+        "trend": market.get("trend"),
+        "max_temp_c": safe_round(rules.get("weather_risk", {}).get("max_forecast_temp_c")),
+        "heat_risk": rules.get("weather_risk", {}).get("heat_risk"),
+        "rain_risk": rules.get("weather_risk", {}).get("rain_risk"),
+        "perishable": crop.get("perishability"),
+        "storage_days": crop.get("storage_life_days"),
+        "crit_temp_c": crop.get("critical_temp_max_c"),
+        "reasons": rules.get("reasons"),
     }
 
 

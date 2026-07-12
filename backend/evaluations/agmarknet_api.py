@@ -14,7 +14,7 @@ API_KEY = os.getenv("DATA_GOV_API_KEY")
 RESOURCE_ID = os.getenv("RESOURCE_ID")
 API_URL = f"https://api.data.gov.in/resource/{RESOURCE_ID}"
 
-DB_PATH = Path.cwd().parent/"database"/"mandi_prices.db"
+DB_PATH = Path(__file__).resolve().parents[1] / "database" / "mandi_prices.db"
 
 SUPPORTED_COMMODITIES = {
     "Brinjal",

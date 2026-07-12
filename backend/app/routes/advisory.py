@@ -3,17 +3,19 @@ from pathlib import Path
 
 from fastapi import APIRouter
 
-EVALUATIONS_DIR = Path(__file__).resolve().parents[3] / "evaluations"
-if str(EVALUATIONS_DIR) not in sys.path:
-    sys.path.append(str(EVALUATIONS_DIR))
+# EVALUATIONS_DIR = Path(__file__).resolve().parents[3] / "evaluations"
+# if str(EVALUATIONS_DIR) not in sys.path:
+#     sys.path.append(str(EVALUATIONS_DIR))
 
-from model import call_gemma
+
+from evaluations.model import call_gemma
 
 router = APIRouter(prefix="/advisory", tags=["Advisory"])
 
 
 @router.post("/")
 def get_advisory(data: dict):
+    print("Inside API")
     commodity = data.get("crop") or "Tomato"
     state = data.get("state") or "Andhra Pradesh"
     district = data.get("district") or "Palamaner"
@@ -31,6 +33,8 @@ def get_advisory(data: dict):
             longitude=longitude,
             language=language,
         )
+        print("Printing Recomendation")
+        print(recommendation)
     except Exception as exc:
         recommendation = f"Unable to generate advisory right now: {exc}"
 
