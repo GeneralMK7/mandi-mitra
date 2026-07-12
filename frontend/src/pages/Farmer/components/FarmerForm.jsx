@@ -3,41 +3,69 @@ import {
   FaSeedling,
   FaMapMarkerAlt,
   FaMapMarkedAlt,
-  FaWarehouse,
-  FaCalendarAlt,
-  FaWeightHanging,
 } from "react-icons/fa";
 
 const STATE_DISTRICT_MAP = {
-  Telangana: [
-    "Hyderabad",
-    "Warangal",
-    "Karimnagar",
-    "Nizamabad",
-    "Khammam",
-    "Mahabubnagar",
-    "Siddipet",
-    "Nalgonda",
-  ],
-  "Tamil Nadu": [
-    "Chennai",
-    "Coimbatore",
-    "Madurai",
-    "Salem",
-    "Erode",
-    "Trichy",
-    "Tirunelveli",
-  ],
-  Karnataka: ["Bengaluru", "Mysuru", "Hubli", "Mangalore", "Belagavi"],
-  Kerala: ["Kochi", "Thrissur", "Kozhikode", "Kannur"],
   "Andhra Pradesh": [
-    "Vijayawada",
+    "Alluri Sitharama Raju",
+    "Anakapalli",
+    "Ananthapuramu",
+    "Annamayya",
+    "Bapatla",
+    "Chittoor",
+    "Dr. B.R. Ambedkar Konaseema",
+    "East Godavari",
+    "Eluru",
     "Guntur",
-    "Nellore",
-    "Visakhapatnam",
+    "Kakinada",
+    "Krishna",
+    "Kurnool",
+    "Nandyal",
+    "NTR",
+    "Palnadu",
+    "Parvathipuram Manyam",
+    "Prakasam",
+    "SPSR Nellore",
+    "Srikakulam",
+    "Sri Sathya Sai",
     "Tirupati",
-  ],
+    "Visakhapatnam",
+    "Vizianagaram",
+    "West Godavari",
+    "YSR Kadapa"
+  ]
 };
+
+const DISTRICT_MARKET_MAP = {
+  "Alluri Sitharama Raju": ["Paderu", "Chintapalle"],
+  "Anakapalli": ["Anakapalli", "Narsipatnam"],
+  "Ananthapuramu": ["Anantapur", "Gooty", "Tadipatri"],
+  "Annamayya": ["Madanapalle", "Rayachoti"],
+  "Bapatla": ["Bapatla", "Chirala"],
+  "Chittoor": ["Chittoor", "Madanapalle"],
+  "Dr. B.R. Ambedkar Konaseema": ["Amalapuram", "Mummidivaram"],
+  "East Godavari": ["Rajahmundry", "Kadiyam"],
+  "Eluru": ["Eluru", "Jangareddygudem"],
+  "Guntur": ["Guntur", "Tenali", "Mangalagiri"],
+  "Kakinada": ["Kakinada", "Peddapuram"],
+  "Krishna": ["Vijayawada", "Gudivada", "Machilipatnam"],
+  "Kurnool": ["Kurnool", "Adoni", "Yemmiganur"],
+  "Nandyal": ["Nandyal", "Atmakur"],
+  "NTR": ["Tiruvuru", "Jaggaiahpet"],
+  "Palnadu": ["Narasaraopet", "Sattenapalli"],
+  "Parvathipuram Manyam": ["Parvathipuram", "Salur"],
+  "Prakasam": ["Ongole", "Markapur"],
+  "SPSR Nellore": ["Nellore", "Kavali", "Atmakur"],
+  "Srikakulam": ["Srikakulam", "Palasa"],
+  "Sri Sathya Sai": ["Hindupur", "Penukonda"],
+  "Tirupati": ["Tirupati", "Sullurpeta", "Naidupeta"],
+  "Visakhapatnam": ["Visakhapatnam", "Gajuwaka"],
+  "Vizianagaram": ["Vizianagaram", "Bobbili"],
+  "West Godavari": ["Bhimavaram", "Tadepalligudem"],
+  "YSR Kadapa": ["Kadapa", "Proddatur", "Pulivendula"]
+};
+
+
 
 const CROPS = [
   "Rice",
@@ -72,6 +100,10 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
     ? STATE_DISTRICT_MAP[formData.state] || []
     : [];
 
+  const availableMarkets = formData.district
+    ? DISTRICT_MARKET_MAP[formData.district] || []
+    : [];
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -16 }}
@@ -94,11 +126,9 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
             className={selectClass}
           >
             <option value="">{t("selectState")}</option>
-            {Object.keys(STATE_DISTRICT_MAP).map((state) => (
-              <option key={state} value={state}>
-                {state}
-              </option>
-            ))}
+            <option value="Andhra Pradesh">
+              Andhra Pradesh
+            </option>
           </select>
         </div>
 
@@ -123,6 +153,32 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
         </div>
 
         <div>
+          <FieldLabel icon={<FaMapMarkerAlt />}>
+            Market
+          </FieldLabel>
+
+          <select
+            name="market"
+            value={formData.market}
+            onChange={onChange}
+            disabled={!formData.district}
+            className={selectClass}
+          >
+            <option value="">
+              {formData.district
+                ? t("selectMarket")
+                : t("selectDistrictFirstForMarket")}
+            </option>
+
+            {availableMarkets.map((market) => (
+              <option key={market} value={market}>
+                {market}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
           <FieldLabel icon={<FaSeedling />}>{t("crop")}</FieldLabel>
           <select
             name="crop"
@@ -139,47 +195,9 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
           </select>
         </div>
 
-        <div>
-          <FieldLabel icon={<FaWarehouse />}>{t("storage")}</FieldLabel>
-          <select
-            name="storage"
-            value={formData.storage}
-            onChange={onChange}
-            className={selectClass}
-          >
-            <option value="Yes">{t("yes")}</option>
-            <option value="No">{t("no")}</option>
-          </select>
-        </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <FieldLabel icon={<FaCalendarAlt />}>
-              {t("harvestDate")}
-            </FieldLabel>
-            <input
-              type="date"
-              name="harvestDate"
-              value={formData.harvestDate}
-              onChange={onChange}
-              className={selectClass}
-            />
-          </div>
-          <div>
-            <FieldLabel icon={<FaWeightHanging />}>
-              {t("quantity")}
-            </FieldLabel>
-            <input
-              type="number"
-              min="0"
-              name="quantity"
-              placeholder="e.g. 50"
-              value={formData.quantity}
-              onChange={onChange}
-              className={selectClass}
-            />
-          </div>
-        </div>
+
+
       </div>
 
       <button

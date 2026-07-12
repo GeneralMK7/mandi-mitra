@@ -6,6 +6,7 @@ import {
   FaMinus,
   FaCalendarAlt,
 } from "react-icons/fa";
+import PriceRangeBar from "./PriceRangeBar";
 
 function TrendBadge({ trend }) {
   const map = {
@@ -78,15 +79,25 @@ function MarketCard({ t, data, empty }) {
             {data.marketName}
           </p>
           <div className="grid grid-cols-3 gap-2.5">
+            <PriceStat label={t("lowestPrice")} value={data.lowestPrice} />
             <PriceStat
               label={t("modalPrice")}
               value={data.modalPrice}
               highlight
             />
             <PriceStat label={t("highestPrice")} value={data.highestPrice} />
-            <PriceStat label={t("lowestPrice")} value={data.lowestPrice} />
           </div>
-          <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
+
+          <PriceRangeBar
+            low={data.lowestPriceValue}
+            modal={data.modalPriceValue}
+            high={data.highestPriceValue}
+            lowLabel={t("lowestPrice")}
+            modalLabel={t("modalPrice")}
+            highLabel={t("highestPrice")}
+          />
+
+          <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
             <FaCalendarAlt />
             {t("arrivalDate")}: {data.arrivalDate}
           </div>

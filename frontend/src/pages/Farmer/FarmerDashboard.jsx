@@ -18,13 +18,10 @@ import { getTranslator } from "./components/translations";
 import { normalizeAdvisory } from "./components/advisoryAdapter";
 
 const INITIAL_FORM = {
-  state: "",
+  state: "Andhra Pradesh",
   district: "",
-  crop: "",
-  storage: "No",
-  language: "English",
-  harvestDate: "",
-  quantity: "",
+  market: "",
+  crop: ""
 };
 
 function FarmerDashboard() {
@@ -40,11 +37,28 @@ function FarmerDashboard() {
     const { name, value } = e.target;
 
     if (name === "state") {
-      setFormData((prev) => ({ ...prev, state: value, district: "" }));
+      setFormData((prev) => ({
+        ...prev,
+        state: value,
+        district: "",
+        market: "",
+      }));
       return;
     }
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "district") {
+      setFormData((prev) => ({
+        ...prev,
+        district: value,
+        market: "",
+      }));
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleLanguageChange = (language) => {
@@ -52,10 +66,16 @@ function FarmerDashboard() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.state || !formData.district || !formData.crop) {
-      alert("Please select state, district and crop first.");
+    if (
+      !formData.state ||
+      !formData.district ||
+      !formData.market ||
+      !formData.crop
+    ) {
+      alert("Please select state, district, market and crop.");
       return;
     }
+
 
     setLoading(true);
     try {
@@ -66,6 +86,7 @@ function FarmerDashboard() {
             state: formData.state,
             district: formData.district,
             crop: formData.crop,
+            market: formData.market,
           },
         }),
       ]);
