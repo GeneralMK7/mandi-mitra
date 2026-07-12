@@ -64,7 +64,7 @@ def call_gemma(
     client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
 
     response = client.chat.completions.create(
-        model="gemma3:4b",
+        model="gemma4:e2b-it-q4_K_M",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
