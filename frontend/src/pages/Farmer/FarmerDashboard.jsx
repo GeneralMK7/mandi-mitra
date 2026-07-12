@@ -16,6 +16,7 @@ import Footer from "./components/Footer";
 import LoadingScreen from "./components/LoadingScreen";
 import { getTranslator } from "./components/translations";
 import { normalizeAdvisory } from "./components/advisoryAdapter";
+import {call_gemma} from "../../../../evaluations/model.py";
 
 const INITIAL_FORM = {
   state: "",
@@ -58,25 +59,36 @@ function FarmerDashboard() {
     }
 
     setLoading(true);
+
     try {
-      const [advisoryRes, historyRes] = await Promise.all([
-        api.post("/advisory", formData),
-        api.get("/market/history", {
-          params: {
-            state: formData.state,
-            district: formData.district,
-            crop: formData.crop,
-          },
-        }),
-      ]);
-      setAdvisory(normalizeAdvisory(advisoryRes.data, formData));
-      setPriceHistory(historyRes.data || []);
+      // NOTE: call_gemma was previously called without being imported anywhere.
+      // Route it through `api` (your services/api module) instead — adjust the
+      // method name below to whatever your api.js actually exports.
+      const response = await api.call_gemma(
+        formData.state,
+        formData.district,
+        formData.crop,
+        "Palamaner APMC",
+        13.552040,
+        78.505798
+      );
+
+      console.log("raw gemma response:", response);
+
+      // Reshape the raw response into exactly what AdvisoryCard.jsx expects:
+      // { recommendation, reasons, confidence, riskLevel, weather, market, crop, price_history }
+      const normalized = normalizeAdvisory(response);
+      console.log("normalized advisory:", normalized);
+
+      setAdvisory(normalized);
+
+      if (normalized?.price_history) {
+        setPriceHistory(normalized.price_history);
+      }
     } catch (error) {
       console.error(error);
-      alert("Failed to fetch advisory. Please try again.");
+      alert("Failed to fetch advisory.");
     } finally {
-      // Let the staged loading screen play out fully so the animation
-      // doesn't feel jarring even when the API responds instantly.
       setTimeout(() => setLoading(false), 1800);
     }
   };
@@ -123,7 +135,7 @@ function FarmerDashboard() {
           t={t}
           aiReady={!loading}
           weatherSummary={
-            advisory ? advisory.weather.temperature : "Awaiting details"
+            advisory ? advisory.weather?.temperature : "Awaiting details"
           }
         />
 
