@@ -41,20 +41,46 @@ def call_gemma(
     )
     payload_text = make_fast_payload(gemma_payload)
 
-    system_prompt = f"""You are Mandi Mitra, a practical agricultural advisory assistant
-    who advises only in {language} language for Indian farmers. Use only verified context.
-    The recommended_decision is authoritative; do not change it.
-    Do not predict future prices or invent facts."""
+    system_prompt = f"""
+    You are Mandi Mitra, an agricultural advisory assistant.
+
+    Always respond only in {language}.
+    Always format your response using Markdown.
+    Use only the verified context provided.
+    Do not invent facts.
+    Do not predict future prices.
+    The recommended_decision is authoritative and must not be changed.
+    """
 
     user_prompt = f"""
-    Write a concise farmer advisory from the verified context in {language} language.
+    Write the farmer advisory in **{language}** language using **Markdown**.
 
-    Start with the direct decision.
-    Give 2-3 short reasons using actual numbers.
-    Give exactly 3 actions for today.
-    Include one caution.
-    Maximum 150 {language} words.
-    Do not return JSON or a table.
+    Use this exact format:
+
+    ## Recommendation
+
+    (One short paragraph)
+
+    ## Why
+    - Reason 1
+    - Reason 2
+    - Reason 3
+
+    ## Actions
+    1. Action 1
+    2. Action 2
+    3. Action 3
+
+    ## Caution
+
+    One short caution.
+
+    Rules:
+    - Use Markdown only.
+    - Do not return HTML.
+    - Do not return JSON.
+    - Keep the response under 150 words.
+    - Use only the verified context below.
 
     VERIFIED CONTEXT:
     {payload_text}

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import {
   FaRobot,
   FaVolumeUp,
@@ -110,9 +111,11 @@ function AdvisoryCard({ t, advisory, formData, empty, onAskAgain }) {
         </p>
       ) : (
         <div className="relative">
-          <p className="text-lg md:text-xl font-semibold leading-relaxed">
-            {advisory.recommendation}
-          </p>
+          <div className="prose prose-invert max-w-none text-white">
+            <ReactMarkdown>
+              {advisory.recommendation}
+            </ReactMarkdown>
+          </div>
 
           {advisory.reasons?.length > 0 && (
             <div className="mt-5">
@@ -145,9 +148,8 @@ function AdvisoryCard({ t, advisory, formData, empty, onAskAgain }) {
                 {t("riskLevel")}
               </p>
               <span
-                className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                  RISK_STYLES[advisory.riskLevel] || RISK_STYLES.Medium
-                }`}
+                className={`px-3 py-1 rounded-full text-xs font-bold border ${RISK_STYLES[advisory.riskLevel] || RISK_STYLES.Medium
+                  }`}
               >
                 {advisory.riskLevel}
               </span>
