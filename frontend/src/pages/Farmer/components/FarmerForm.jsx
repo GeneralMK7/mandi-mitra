@@ -3,6 +3,8 @@ import {
   FaSeedling,
   FaMapMarkerAlt,
   FaMapMarkedAlt,
+  FaCalendarAlt,
+  FaWeightHanging,
 } from "react-icons/fa";
 
 const STATE_DISTRICT_MAP = {
@@ -36,52 +38,44 @@ const STATE_DISTRICT_MAP = {
   ]
 };
 
-const DISTRICT_MARKET_MAP = {
-  "Alluri Sitharama Raju": ["Paderu", "Chintapalle"],
-  "Anakapalli": ["Anakapalli", "Narsipatnam"],
-  "Ananthapuramu": ["Anantapur", "Gooty", "Tadipatri"],
-  "Annamayya": ["Madanapalle", "Rayachoti"],
-  "Bapatla": ["Bapatla", "Chirala"],
-  "Chittoor": ["Chittoor", "Madanapalle"],
-  "Dr. B.R. Ambedkar Konaseema": ["Amalapuram", "Mummidivaram"],
-  "East Godavari": ["Rajahmundry", "Kadiyam"],
-  "Eluru": ["Eluru", "Jangareddygudem"],
-  "Guntur": ["Guntur", "Tenali", "Mangalagiri"],
-  "Kakinada": ["Kakinada", "Peddapuram"],
-  "Krishna": ["Vijayawada", "Gudivada", "Machilipatnam"],
-  "Kurnool": ["Kurnool", "Adoni", "Yemmiganur"],
-  "Nandyal": ["Nandyal", "Atmakur"],
-  "NTR": ["Tiruvuru", "Jaggaiahpet"],
-  "Palnadu": ["Narasaraopet", "Sattenapalli"],
-  "Parvathipuram Manyam": ["Parvathipuram", "Salur"],
-  "Prakasam": ["Ongole", "Markapur"],
-  "SPSR Nellore": ["Nellore", "Kavali", "Atmakur"],
-  "Srikakulam": ["Srikakulam", "Palasa"],
-  "Sri Sathya Sai": ["Hindupur", "Penukonda"],
-  "Tirupati": ["Tirupati", "Sullurpeta", "Naidupeta"],
-  "Visakhapatnam": ["Visakhapatnam", "Gajuwaka"],
-  "Vizianagaram": ["Vizianagaram", "Bobbili"],
-  "West Godavari": ["Bhimavaram", "Tadepalligudem"],
-  "YSR Kadapa": ["Kadapa", "Proddatur", "Pulivendula"]
-};
-
-
 
 const CROPS = [
-  "Rice",
-  "Wheat",
-  "Cotton",
-  "Maize",
   "Tomato",
   "Onion",
   "Potato",
-  "Chilli",
-  "Turmeric",
-  "Groundnut",
-  "Banana",
+  "Green Chilli",
+  "Brinjal",
+  "Cauliflower"
 ];
 
-export { STATE_DISTRICT_MAP, CROPS };
+export {
+  STATE_DISTRICT_MAP,
+  CROPS,
+  MARKET_OPTIONS,
+};
+
+
+const MARKET_OPTIONS = {
+  Tomato: [
+    "B.Kothakota H/Q Angallu",
+    "Guramkonda Sub-yard of AMC Valmikipuram",
+    "Kalikiri APMC",
+    "Madanapalli APMC",
+    "Mulakalacheruvu APMC",
+    "Punganur APMC",
+    "Valmikipuram APMC",
+    "Palamaner APMC",
+    "V. Kota Sub-yard of AMC Palamaneru",
+    "Somala APMC",
+  ],
+  Onion: ["Kurnool APMC"],
+  Potato: ["Palamaner APMC"],
+  "Green Chilli": ["Palamaner APMC"],
+  Brinjal: ["Palamaner APMC"],
+  Cauliflower: ["Palamaner APMC"],
+};
+
+
 
 function FieldLabel({ icon, children }) {
   return (
@@ -96,13 +90,10 @@ const selectClass =
   "w-full border-2 border-gray-200 rounded-xl px-4 py-3.5 text-base bg-white focus:outline-none focus:ring-4 focus:ring-green-100 focus:border-green-500 transition disabled:bg-gray-50 disabled:cursor-not-allowed";
 
 function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
-  const availableDistricts = formData.state
-    ? STATE_DISTRICT_MAP[formData.state] || []
+  const availableMarkets = formData.crop
+    ? MARKET_OPTIONS[formData.crop] || []
     : [];
 
-  const availableMarkets = formData.district
-    ? DISTRICT_MARKET_MAP[formData.district] || []
-    : [];
 
   return (
     <motion.div
@@ -126,59 +117,13 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
             className={selectClass}
           >
             <option value="">{t("selectState")}</option>
-            <option value="Andhra Pradesh">
-              Andhra Pradesh
-            </option>
-          </select>
-        </div>
+  <option value="Andhra Pradesh">
+    Andhra Pradesh
+  </option>
+          </select >
+        </div >
 
-        <div>
-          <FieldLabel icon={<FaMapMarkedAlt />}>{t("district")}</FieldLabel>
-          <select
-            name="district"
-            value={formData.district}
-            onChange={onChange}
-            disabled={!formData.state}
-            className={selectClass}
-          >
-            <option value="">
-              {formData.state ? t("selectDistrict") : t("selectStateFirst")}
-            </option>
-            {availableDistricts.map((district) => (
-              <option key={district} value={district}>
-                {district}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <FieldLabel icon={<FaMapMarkerAlt />}>
-            Market
-          </FieldLabel>
-
-          <select
-            name="market"
-            value={formData.market}
-            onChange={onChange}
-            disabled={!formData.district}
-            className={selectClass}
-          >
-            <option value="">
-              {formData.district
-                ? t("selectMarket")
-                : t("selectDistrictFirstForMarket")}
-            </option>
-
-            {availableMarkets.map((market) => (
-              <option key={market} value={market}>
-                {market}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
+    <div>
           <FieldLabel icon={<FaSeedling />}>{t("crop")}</FieldLabel>
           <select
             name="crop"
@@ -195,19 +140,38 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
           </select>
         </div>
 
+        <div>
+          <FieldLabel icon={<FaMapMarkerAlt />}>{t("market")}</FieldLabel>
+          <select
+            name="market"
+            value={formData.market}
+            onChange={onChange}
+            disabled={!formData.crop}
+            className={selectClass}
+          >
+            <option value="">
+              {formData.crop ? t("selectMarket") : t("selectCropFirst")}
+            </option>
+            {availableMarkets.map((market) => (
+              <option key={market} value={market}>
+                {market}
+              </option>
+            ))}
+          </select>
+        </div>
 
 
 
-      </div>
+      </div >
 
-      <button
-        onClick={onSubmit}
-        disabled={loading}
-        className="mt-6 w-full bg-green-700 hover:bg-green-800 disabled:bg-green-400 disabled:cursor-not-allowed text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors duration-200 shadow-md hover:shadow-lg active:scale-[0.98]"
-      >
-        {loading ? "…" : t("getAdvisory")}
-      </button>
-    </motion.div>
+    <button
+      onClick={onSubmit}
+      disabled={loading}
+      className="mt-6 w-full bg-green-700 hover:bg-green-800 disabled:bg-green-400 disabled:cursor-not-allowed text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors duration-200 shadow-md hover:shadow-lg active:scale-[0.98]"
+    >
+      {loading ? "…" : t("getAdvisory")}
+    </button>
+    </motion.div >
   );
 }
 

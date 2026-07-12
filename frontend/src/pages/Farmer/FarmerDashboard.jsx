@@ -21,7 +21,9 @@ const INITIAL_FORM = {
   state: "Andhra Pradesh",
   district: "",
   market: "",
-  crop: ""
+  crop: "",
+  latitude: "",
+  longitude: "",
 };
 
 function FarmerDashboard() {
@@ -37,12 +39,12 @@ function FarmerDashboard() {
     const { name, value } = e.target;
 
     if (name === "state") {
-      setFormData((prev) => ({
-        ...prev,
-        state: value,
-        district: "",
-        market: "",
-      }));
+      setFormData((prev) => ({ ...prev, state: value }));
+      return;
+    }
+
+    if (name === "crop") {
+      setFormData((prev) => ({ ...prev, crop: value, market: "" }));
       return;
     }
 
@@ -66,38 +68,40 @@ function FarmerDashboard() {
   };
 
   const handleSubmit = async () => {
-    if (
-      !formData.state ||
-      !formData.district ||
-      !formData.market ||
-      !formData.crop
-    ) {
-      alert("Please select state, district, market and crop.");
+    if (!formData.state || !formData.crop || !formData.market) {
+      alert("Please select state, crop and market first.");
       return;
     }
 
 
     setLoading(true);
+
     try {
-      const [advisoryRes, historyRes] = await Promise.all([
-        api.post("/advisory", formData),
-        api.get("/market/history", {
-          params: {
-            state: formData.state,
-            district: formData.district,
-            crop: formData.crop,
-            market: formData.market,
-          },
-        }),
-      ]);
-      setAdvisory(normalizeAdvisory(advisoryRes.data, formData));
-      setPriceHistory(historyRes.data || []);
+      const response = await api.post("/advisory/", {
+        state: formData.state,
+        crop: formData.crop,
+        language: formData.language,
+        harvestDate: formData.harvestDate,
+        quantity: formData.quantity,
+        market: formData.market,
+        latitude: 13.552040,
+        longitude: 78.505798,
+      });
+
+      console.log("raw gemma response:", response.data);
+
+      const normalized = normalizeAdvisory(response.data, formData);
+      console.log("normalized advisory:", normalized);
+
+      setAdvisory(normalized);
+
+      if (normalized?.price_history) {
+        setPriceHistory(normalized.price_history);
+      }
     } catch (error) {
       console.error(error);
-      alert("Failed to fetch advisory. Please try again.");
+      alert("Failed to fetch advisory.");
     } finally {
-      // Let the staged loading screen play out fully so the animation
-      // doesn't feel jarring even when the API responds instantly.
       setTimeout(() => setLoading(false), 1800);
     }
   };
@@ -113,9 +117,11 @@ function FarmerDashboard() {
   };
 
   const handleNearbyMarkets = () => {
-    const query = formData.district
-      ? `mandi market near ${formData.district}`
-      : "mandi market near me";
+    const query = formData.market
+      ? formData.market
+      : formData.crop
+        ? `mandi market near ${formData.crop}`
+        : "mandi market near me";
     window.open(
       `https://www.google.com/maps/search/${encodeURIComponent(query)}`,
       "_blank"
@@ -144,7 +150,7 @@ function FarmerDashboard() {
           t={t}
           aiReady={!loading}
           weatherSummary={
-            advisory ? advisory.weather.temperature : "Awaiting details"
+            advisory ? advisory.weather?.temperature : "Awaiting details"
           }
         />
 
@@ -177,7 +183,7 @@ function FarmerDashboard() {
               t={t}
               history={priceHistory || []}
               empty={isEmpty}
-              location={`${formData.district}, ${formData.state}`}
+              location={formData.market ? `${formData.market}, ${formData.state}` : formData.state}
             />
 
             <CropCard t={t} data={advisory?.crop} empty={isEmpty} />

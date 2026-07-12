@@ -39,9 +39,11 @@ export function normalizeAdvisory(raw, formData) {
   const reasons =
     raw.reasons ??
     [
-      `${formData.crop || "Crop"} prices are trending ${trend.toLowerCase()} in ${formData.district || "your district"
+      `${formData.crop || "Crop"} prices are trending ${(raw.market?.trend || trend).toLowerCase()
+      } at ${formData.market || "your selected market"} in ${formData.district || "your district"
       }.`,
-      `Weather conditions (${raw.weather?.rainfall ?? "low rainfall"}) should be considered before selling.`,
+      `Weather conditions (${raw.weather?.rainfall ?? "low rainfall"
+      }) should be considered before selling.`,
       `Market prices are based on the selected market.`,
     ];
 
