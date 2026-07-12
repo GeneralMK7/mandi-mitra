@@ -117,13 +117,13 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
             className={selectClass}
           >
             <option value="">{t("selectState")}</option>
-  <option value="Andhra Pradesh">
-    Andhra Pradesh
-  </option>
+            <option value="Andhra Pradesh">
+              Andhra Pradesh
+            </option>
           </select >
         </div >
 
-    <div>
+        <div>
           <FieldLabel icon={<FaSeedling />}>{t("crop")}</FieldLabel>
           <select
             name="crop"
@@ -160,17 +160,65 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
           </select>
         </div>
 
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <FieldLabel>{t("latitude")}</FieldLabel>
 
+            <input
+              type="number"
+              step="any"
+              name="latitude"
+              value={formData.latitude}
+              onChange={onChange}
+              placeholder={`${t("example")} 13.552040`}
+              className={selectClass}
+            />
+          </div>
+
+          <div>
+            <FieldLabel>{t("longitude")}</FieldLabel>
+
+            <input
+              type="number"
+              step="any"
+              name="longitude"
+              value={formData.longitude}
+              onChange={onChange}
+              placeholder={`${t("example")} 78.505798`}
+              className={selectClass}
+            />
+          </div>
+        </div>
+
+        <div>
+          <FieldLabel>{t("language")}</FieldLabel>
+
+          <select
+            name="language"
+            value={formData.language}
+            onChange={onChange}
+            className={selectClass}
+          >
+            <option value="">
+              {t("selectLanguage")}
+            </option>
+
+            <option value="English">English</option>
+            <option value="Tamil">தமிழ்</option>
+            <option value="Telugu">తెలుగు</option>
+            <option value="Hindi">हिन्दी</option>
+          </select>
+        </div>
 
       </div >
 
-    <button
-      onClick={onSubmit}
-      disabled={loading}
-      className="mt-6 w-full bg-green-700 hover:bg-green-800 disabled:bg-green-400 disabled:cursor-not-allowed text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors duration-200 shadow-md hover:shadow-lg active:scale-[0.98]"
-    >
-      {loading ? "…" : t("getAdvisory")}
-    </button>
+      <button
+        onClick={onSubmit}
+        disabled={loading}
+        className="mt-6 w-full bg-green-700 hover:bg-green-800 disabled:bg-green-400 disabled:cursor-not-allowed text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors duration-200 shadow-md hover:shadow-lg active:scale-[0.98]"
+      >
+        {loading ? "…" : t("getAdvisory")}
+      </button>
     </motion.div >
   );
 }

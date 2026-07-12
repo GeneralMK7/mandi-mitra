@@ -24,6 +24,7 @@ const INITIAL_FORM = {
   crop: "",
   latitude: "",
   longitude: "",
+  language: "",
 };
 
 function FarmerDashboard() {
