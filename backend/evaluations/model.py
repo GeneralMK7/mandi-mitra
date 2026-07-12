@@ -55,6 +55,7 @@ def call_gemma(
     Include one caution.
     Maximum 150 {language} words.
     Do not return JSON or a table.
+    Answer in Markdown format.
 
     VERIFIED CONTEXT:
     {payload_text}
