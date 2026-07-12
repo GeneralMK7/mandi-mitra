@@ -19,9 +19,8 @@ import { normalizeAdvisory } from "./components/advisoryAdapter";
 
 const INITIAL_FORM = {
   state: "",
-  district: "",
   crop: "",
-  storage: "No",
+  market: "",
   language: "English",
   harvestDate: "",
   quantity: "",
@@ -40,7 +39,12 @@ function FarmerDashboard() {
     const { name, value } = e.target;
 
     if (name === "state") {
-      setFormData((prev) => ({ ...prev, state: value, district: "" }));
+      setFormData((prev) => ({ ...prev, state: value }));
+      return;
+    }
+
+    if (name === "crop") {
+      setFormData((prev) => ({ ...prev, crop: value, market: "" }));
       return;
     }
 
@@ -52,8 +56,8 @@ function FarmerDashboard() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.state || !formData.district || !formData.crop) {
-      alert("Please select state, district and crop first.");
+    if (!formData.state || !formData.crop || !formData.market) {
+      alert("Please select state, crop and market first.");
       return;
     }
 
@@ -62,13 +66,11 @@ function FarmerDashboard() {
     try {
       const response = await api.post("/advisory/", {
         state: formData.state,
-        district: formData.district,
         crop: formData.crop,
-        storage: formData.storage,
         language: formData.language,
         harvestDate: formData.harvestDate,
         quantity: formData.quantity,
-        market: `${formData.district} APMC`,
+        market: formData.market,
         latitude: 13.552040,
         longitude: 78.505798,
       });
@@ -102,9 +104,11 @@ function FarmerDashboard() {
   };
 
   const handleNearbyMarkets = () => {
-    const query = formData.district
-      ? `mandi market near ${formData.district}`
-      : "mandi market near me";
+    const query = formData.market
+      ? formData.market
+      : formData.crop
+        ? `mandi market near ${formData.crop}`
+        : "mandi market near me";
     window.open(
       `https://www.google.com/maps/search/${encodeURIComponent(query)}`,
       "_blank"
@@ -166,7 +170,7 @@ function FarmerDashboard() {
               t={t}
               history={priceHistory || []}
               empty={isEmpty}
-              location={`${formData.district}, ${formData.state}`}
+              location={formData.market ? `${formData.market}, ${formData.state}` : formData.state}
             />
 
             <CropCard t={t} data={advisory?.crop} empty={isEmpty} />

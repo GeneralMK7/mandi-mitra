@@ -2,34 +2,20 @@ import { motion } from "framer-motion";
 import {
   FaSeedling,
   FaMapMarkerAlt,
-  FaMapMarkedAlt,
-  FaWarehouse,
   FaCalendarAlt,
   FaWeightHanging,
 } from "react-icons/fa";
 
-const STATE_DISTRICT_MAP = {
-  Telangana: [
-    "Hyderabad",
-    "Warangal",
-    "Karimnagar",
-    "Nizamabad",
-    "Khammam",
-    "Mahabubnagar",
-    "Siddipet",
-    "Nalgonda",
-  ],
-  "Tamil Nadu": [
-    "Chennai",
-    "Coimbatore",
-    "Madurai",
-    "Salem",
-    "Erode",
-    "Trichy",
-    "Tirunelveli",
-  ],
-  Karnataka: ["Bengaluru", "Mysuru", "Hubli", "Mangalore", "Belagavi"],
-  Kerala: ["Kochi", "Thrissur", "Kozhikode", "Kannur"],
+const CROPS = [
+  "Tomato",
+  "Onion",
+  "Potato",
+  "Green Chilli",
+  "Brinjal",
+  "Cauliflower"
+];
+
+const STATE_OPTIONS = {
   "Andhra Pradesh": [
     "Vijayawada",
     "Guntur",
@@ -39,21 +25,27 @@ const STATE_DISTRICT_MAP = {
   ],
 };
 
-const CROPS = [
-  "Rice",
-  "Wheat",
-  "Cotton",
-  "Maize",
-  "Tomato",
-  "Onion",
-  "Potato",
-  "Chilli",
-  "Turmeric",
-  "Groundnut",
-  "Banana",
-];
+const MARKET_OPTIONS = {
+  Tomato: [
+    "B.Kothakota H/Q Angallu",
+    "Guramkonda Sub-yard of AMC Valmikipuram",
+    "Kalikiri APMC",
+    "Madanapalli APMC",
+    "Mulakalacheruvu APMC",
+    "Punganur APMC",
+    "Valmikipuram APMC",
+    "Palamaner APMC",
+    "V. Kota Sub-yard of AMC Palamaneru",
+    "Somala APMC",
+  ],
+  Onion: ["Kurnool APMC"],
+  Potato: ["Palamaner APMC"],
+  "Green Chilli": ["Palamaner APMC"],
+  Brinjal: ["Palamaner APMC"],
+  Cauliflower: ["Palamaner APMC"],
+};
 
-export { STATE_DISTRICT_MAP, CROPS };
+export { CROPS, MARKET_OPTIONS };
 
 function FieldLabel({ icon, children }) {
   return (
@@ -68,8 +60,8 @@ const selectClass =
   "w-full border-2 border-gray-200 rounded-xl px-4 py-3.5 text-base bg-white focus:outline-none focus:ring-4 focus:ring-green-100 focus:border-green-500 transition disabled:bg-gray-50 disabled:cursor-not-allowed";
 
 function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
-  const availableDistricts = formData.state
-    ? STATE_DISTRICT_MAP[formData.state] || []
+  const availableMarkets = formData.crop
+    ? MARKET_OPTIONS[formData.crop] || []
     : [];
 
   return (
@@ -94,29 +86,9 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
             className={selectClass}
           >
             <option value="">{t("selectState")}</option>
-            {Object.keys(STATE_DISTRICT_MAP).map((state) => (
+            {Object.keys(STATE_OPTIONS).map((state) => (
               <option key={state} value={state}>
                 {state}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <FieldLabel icon={<FaMapMarkedAlt />}>{t("district")}</FieldLabel>
-          <select
-            name="district"
-            value={formData.district}
-            onChange={onChange}
-            disabled={!formData.state}
-            className={selectClass}
-          >
-            <option value="">
-              {formData.state ? t("selectDistrict") : t("selectStateFirst")}
-            </option>
-            {availableDistricts.map((district) => (
-              <option key={district} value={district}>
-                {district}
               </option>
             ))}
           </select>
@@ -140,15 +112,22 @@ function FarmerForm({ t, formData, onChange, onSubmit, loading }) {
         </div>
 
         <div>
-          <FieldLabel icon={<FaWarehouse />}>{t("storage")}</FieldLabel>
+          <FieldLabel icon={<FaMapMarkerAlt />}>{t("market")}</FieldLabel>
           <select
-            name="storage"
-            value={formData.storage}
+            name="market"
+            value={formData.market}
             onChange={onChange}
+            disabled={!formData.crop}
             className={selectClass}
           >
-            <option value="Yes">{t("yes")}</option>
-            <option value="No">{t("no")}</option>
+            <option value="">
+              {formData.crop ? t("selectMarket") : t("selectCropFirst")}
+            </option>
+            {availableMarkets.map((market) => (
+              <option key={market} value={market}>
+                {market}
+              </option>
+            ))}
           </select>
         </div>
 

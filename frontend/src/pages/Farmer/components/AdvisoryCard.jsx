@@ -56,7 +56,7 @@ function handleDownloadPdf(advisory, formData) {
   doc.text("MandiMitra - AI Advisory Report", 14, y);
   y += 10;
   doc.setFontSize(11);
-  doc.text(`Crop: ${formData.crop}  |  Location: ${formData.district}, ${formData.state}`, 14, y);
+  doc.text(`Crop: ${formData.crop}  |  Market: ${formData.market}  |  State: ${formData.state}`, 14, y);
   y += 10;
   doc.setFontSize(14);
   doc.text("Recommendation", 14, y);

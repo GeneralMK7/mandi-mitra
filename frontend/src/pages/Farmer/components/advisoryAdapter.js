@@ -46,11 +46,8 @@ export function normalizeAdvisory(raw, formData) {
     [
       `${formData.crop || "Crop"} prices are trending ${
         (raw.market?.trend || "Stable").toLowerCase()
-      } in ${formData.district || "your district"}.`,
+      } at ${formData.market || "your selected market"}.`,
       `Weather conditions (${raw.weather?.rainfall ?? "low rainfall"}) favor selling soon rather than storing.`,
-      formData.storage === "Yes"
-        ? "You have storage available, giving flexibility to wait for a better price if needed."
-        : "Limited storage availability makes an earlier sale lower-risk.",
     ];
 
   return {
@@ -83,6 +80,5 @@ export function normalizeAdvisory(raw, formData) {
     reasons,
     confidence: raw.confidence ?? 82,
     riskLevel: raw.risk_level ?? "Low",
-    storageAvailable: formData.storage === "Yes",
   };
 }
