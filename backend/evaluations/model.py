@@ -21,8 +21,24 @@ LATITUDE = 13.552040
 LONGITUDE = 78.505798
 
 
-def call_gemma(commodity, state, market, latitude, longitude, language="Telugu"):
-    gemma_payload = generate_analysis(commodity, state, market, latitude, longitude, language)
+def call_gemma(
+    commodity,
+    state,
+    district,
+    market,
+    latitude,
+    longitude,
+    language="Telugu",
+):
+    gemma_payload = generate_analysis(
+        commodity,
+        state,
+        district,
+        market,
+        latitude,
+        longitude,
+        language,
+    )
     payload_text = make_fast_payload(gemma_payload)
 
     system_prompt = f"""You are Mandi Mitra, a practical agricultural advisory assistant
@@ -47,7 +63,7 @@ def call_gemma(commodity, state, market, latitude, longitude, language="Telugu")
     client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
 
     response = client.chat.completions.create(
-        model="gemma4:e2b-it-q4_K_M",
+        model="gemma3:4b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
@@ -65,6 +81,7 @@ if __name__ == "__main__":
         call_gemma(
             commodity=COMMODITY,
             state=STATE,
+            district="Palamaner",
             market=MARKET,
             latitude=LATITUDE,
             longitude=LONGITUDE,

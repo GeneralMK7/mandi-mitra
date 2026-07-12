@@ -14,7 +14,7 @@ API_KEY = os.getenv("DATA_GOV_API_KEY")
 RESOURCE_ID = os.getenv("RESOURCE_ID")
 API_URL = f"https://api.data.gov.in/resource/{RESOURCE_ID}"
 
-DB_PATH = Path(__file__).resolve().parents[1] / "database" / "mandi_prices.db"
+DB_PATH = Path(__file__).resolve().parents[1] / "app" / "database" / "mandi_prices.db"
 
 SUPPORTED_COMMODITIES = {
     "Brinjal",
@@ -156,7 +156,7 @@ def upsert_prices_to_db(df):
 
     rows = df.where(pd.notna(df), None).to_dict(orient="records")
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(str(DB_PATH))
 
     conn.executemany(
         """
@@ -311,7 +311,7 @@ def fetch_historical_prices(
     params.extend(date_params)
     params.append(days)
 
-    with sqlite3.connect(db_path) as conn:
+    with sqlite3.connect(str(db_path)) as conn:
         history = pd.read_sql_query(query, conn, params=params)
 
     history["arrival_date"] = pd.to_datetime(history["arrival_date"])

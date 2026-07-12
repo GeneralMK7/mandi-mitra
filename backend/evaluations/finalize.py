@@ -7,7 +7,7 @@ from .agmarknet_api import fetch_historical_prices
 from .weather_api import fetch_weather_data
 
 BASE_DIR = Path(__file__).resolve().parent
-CROP_KB_PATH = BASE_DIR.parent / "crop_database" / "crop_knowledge_base.json"
+CROP_KB_PATH = BASE_DIR.parent.parent / "crop_database" / "crop_knowledge_base.json"
 
 
 COMMODITY = 'Potato'
@@ -368,10 +368,15 @@ def prepare_gemma_payload(history, weather_data, crop_data, language="Telugu") -
         "rule_engine_result": rule_engine_result
     }
 
-def generate_analysis(commodity, state, market, latitude, longitude, language="Telugu"):
+def generate_analysis(commodity, state, district, market, latitude, longitude, language="Telugu"):
 
     # Last 7 days of market prices for the specified commodity, state, and market
-    historic_prices = fetch_historical_prices(commodity=commodity,state=state, market=market)
+    historic_prices = fetch_historical_prices(
+        commodity=commodity,
+        state=state,
+        district=district,
+        market=market,
+    )
 
     # fetches crop knowledge from the local JSON file
     crop_knowledge = get_crop_knowledge(commodity)

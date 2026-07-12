@@ -9,6 +9,7 @@ from fastapi import APIRouter
 
 
 from evaluations.model import call_gemma
+from evaluations.agmarknet_api import fetch_historical_prices
 
 router = APIRouter(prefix="/advisory", tags=["Advisory"])
 
@@ -19,15 +20,16 @@ def get_advisory(data: dict):
     commodity = data.get("crop") or "Tomato"
     state = data.get("state") or "Andhra Pradesh"
     district = data.get("district") or "Palamaner"
-    market = data.get("market") or f"{district} APMC"
+    market = data.get("market") or "Palamaner APMC"
     latitude = float(data.get("latitude", 13.552040))
     longitude = float(data.get("longitude", 78.505798))
-    language = data.get("language") or "English"
+    language = data.get("language") or "Telugu"
 
     try:
         recommendation = call_gemma(
             commodity=commodity,
             state=state,
+            district=district,
             market=market,
             latitude=latitude,
             longitude=longitude,
@@ -38,6 +40,32 @@ def get_advisory(data: dict):
     except Exception as exc:
         recommendation = f"Unable to generate advisory right now: {exc}"
 
+    historic_prices = fetch_historical_prices(
+        commodity=commodity,
+        state=state,
+        market=market,
+        district=district,
+    )
+
+    if historic_prices.empty:
+        market_payload = {
+            "market_name": market,
+            "current_price": "₹2200 / Quintal",
+            "modal_price": 2200,
+            "max_price": 2350,
+            "min_price": 2050,
+        }
+    else:
+        latest_row = historic_prices.iloc[-1]
+        market_payload = {
+            "market_name": market,
+            "current_price": f"₹{latest_row['modal_price']} / Quintal",
+            "modal_price": latest_row["modal_price"],
+            "max_price": latest_row["max_price"],
+            "min_price": latest_row["min_price"],
+        }
+    
+    
     return {
         "weather": {
             "temperature": "32°C",
@@ -45,12 +73,8 @@ def get_advisory(data: dict):
             "rainfall": "10%",
         },
         "market": {
-            "market_name": market,
-            "current_price": "₹2200 / Quintal",
+            **market_payload,
             "trend": "Increasing",
-            "modal_price": 2200,
-            "max_price": 2350,
-            "min_price": 2050,
         },
         "crop": {
             "harvest_tip": "Harvest within 2 days",

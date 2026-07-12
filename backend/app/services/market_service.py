@@ -1,12 +1,13 @@
 import sqlite3
 import random
+from pathlib import Path
 from datetime import date, datetime
 
-DB_PATH = "app/database/mandi_prices.db"
+DB_PATH = Path(__file__).resolve().parents[1] / "database" / "mandi_prices.db"
 
 
 def get_connection():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     return conn
 
