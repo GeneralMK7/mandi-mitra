@@ -11,7 +11,7 @@ def get_connection():
     return conn
 
 
-def get_market_data(state, district, crop):
+def get_market_data(state, district, market, crop):
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -19,11 +19,12 @@ def get_market_data(state, district, crop):
         SELECT *
         FROM mandi_market_data
         WHERE state = ?
-          AND district = ?
-          AND commodity = ?
+            AND district = ?
+            AND market = ?
+            AND commodity = ?
         ORDER BY arrival_date DESC
         LIMIT 1
-    """, (state, district, crop))
+    """, (state, district, market, crop, limit))
 
     row = cursor.fetchone()
     conn.close()
@@ -34,7 +35,7 @@ def get_market_data(state, district, crop):
     return {"message": "No market data found"}
 
 
-def get_market_history(state, district, crop, limit=30):
+def get_market_history(state, district, market, crop, limit=30):
     """
     Returns max/modal/min price for a state+district+crop combination,
     ordered oldest -> newest, for plotting a price-vs-date trend graph
@@ -47,11 +48,12 @@ def get_market_history(state, district, crop, limit=30):
         SELECT arrival_date, max_price, modal_price, min_price
         FROM mandi_market_data
         WHERE state = ?
-          AND district = ?
-          AND commodity = ?
+            AND district = ?
+            AND market = ?
+            AND commodity = ?
         ORDER BY arrival_date DESC
-        LIMIT ?
-    """, (state, district, crop, limit))
+        LIMIT 1
+    """, (state, district, market, crop, limit))
 
     rows = [dict(row) for row in cursor.fetchall()]
     conn.close()

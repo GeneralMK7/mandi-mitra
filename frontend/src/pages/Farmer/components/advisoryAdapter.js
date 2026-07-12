@@ -36,18 +36,16 @@ export function normalizeAdvisory(raw, formData) {
   const lowestPrice = parseNumber(raw.market?.min_price, modalPrice * 0.9);
   const trend = raw.market?.trend ?? "Stable";
   const riskLevel = raw.risk_level ?? "Low";
-
   const reasons =
     raw.reasons ??
     [
-      `${formData.crop || "Crop"} prices are trending ${trend.toLowerCase()} in ${
-        formData.district || "your district"
+      `${formData.crop || "Crop"} prices are trending ${trend.toLowerCase()} in ${formData.district || "your district"
       }.`,
-      `Weather conditions (${raw.weather?.rainfall ?? "low rainfall"}) favor selling soon rather than storing.`,
-      formData.storage === "Yes"
-        ? "You have storage available, giving flexibility to wait for a better price if needed."
-        : "Limited storage availability makes an earlier sale lower-risk.",
+      `Weather conditions (${raw.weather?.rainfall ?? "low rainfall"}) should be considered before selling.`,
+      `Market prices are based on the selected market.`,
     ];
+
+
 
   return {
     weather: {
@@ -58,7 +56,10 @@ export function normalizeAdvisory(raw, formData) {
       condition: classifyRainfall(raw.weather?.rainfall),
     },
     market: {
-      marketName: raw.market?.market_name ?? "Nearest Mandi",
+      marketName:
+        raw.market?.market_name ||
+        formData.market ||
+        "Nearest Mandi",
       modalPrice: `₹${Math.round(modalPrice)}`,
       highestPrice: `₹${Math.round(highestPrice)}`,
       lowestPrice: `₹${Math.round(lowestPrice)}`,
@@ -83,6 +84,6 @@ export function normalizeAdvisory(raw, formData) {
     confidence: raw.confidence ?? 82,
     riskLevel,
     decision: inferDecision(riskLevel, trend, raw.recommendation),
-    storageAvailable: formData.storage === "Yes",
+
   };
 }

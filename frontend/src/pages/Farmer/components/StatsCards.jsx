@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FaCloudSun, FaRupeeSign, FaRobot, FaWarehouse } from "react-icons/fa";
+import { FaCloudSun, FaRupeeSign, FaRobot, FaMapMarkerAlt } from "react-icons/fa";
 
 function StatCard({ icon, label, value, accent, delay }) {
   return (
@@ -32,11 +32,7 @@ function StatsCards({ t, advisory }) {
     : "—";
   const marketValue = advisory ? advisory.market.modalPrice : "—";
   const aiValue = advisory ? t("aiReady") : "Standing by";
-  const storageValue = advisory
-    ? advisory.storageAvailable
-      ? t("yes")
-      : t("no")
-    : "—";
+
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -62,9 +58,9 @@ function StatsCards({ t, advisory }) {
         delay={0.1}
       />
       <StatCard
-        icon={<FaWarehouse className="text-white" />}
-        label={t("storageStatus")}
-        value={storageValue}
+        icon={<FaMapMarkerAlt className="text-white" />}
+        label={t("selectedMarket")}
+        value={advisory ? advisory.market.marketName : "—"}
         accent="bg-gradient-to-br from-violet-400 to-purple-500"
         delay={0.15}
       />

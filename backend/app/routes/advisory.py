@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from app.services.market_service import get_market_data
 
 router = APIRouter(prefix="/advisory", tags=["Advisory"])
 
@@ -6,8 +7,19 @@ router = APIRouter(prefix="/advisory", tags=["Advisory"])
 @router.post("/")
 def get_advisory(data: dict):
 
-    return {
+    state = data.get("state")
+    district = data.get("district")
+    market = data.get("market")
+    crop = data.get("crop")
 
+    market_data = get_market_data(
+        state,
+        district,
+        market,
+        crop
+    )
+
+    return {
         "weather": {
             "temperature": "32°C",
             "humidity": "72%",
@@ -15,17 +27,13 @@ def get_advisory(data: dict):
         },
 
         "market": {
-            "market_name": "Hyderabad Market",
-            "current_price": "₹2200 / Quintal",
+            "market_name": market_data.get("market", market),
+            "modal_price": market_data.get("modal_price"),
+            "min_price": market_data.get("min_price"),
+            "max_price": market_data.get("max_price"),
+            "arrival_date": market_data.get("arrival_date"),
             "trend": "Increasing"
         },
 
-        "crop": {
-            "harvest_tip": "Harvest within 2 days",
-            "storage_tip": "Can be stored for 5 days",
-            "best_selling_period": "This Week"
-        },
-
-        "recommendation":
-        "Waiting for AI recommendation from Gemma"
+        "recommendation": "Waiting for AI recommendation from Gemma"
     }
